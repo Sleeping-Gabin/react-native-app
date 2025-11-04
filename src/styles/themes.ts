@@ -1,0 +1,50 @@
+export type AppTheme = {
+  primary: string,
+  onPrimary: string,
+  primaryContainer: string,
+  onPrimaryContainer: string,
+  inversePrimary: string,
+  secondary: string,
+  onSecondary: string,
+  secondaryContainer: string,
+  onSecondaryContainer: string,
+  background: string,
+  text: string,
+  gray: string,
+  darkGray: string,
+  lightGray: string
+}
+
+export const lightTheme: AppTheme = {
+  primary: "#6b538c",
+  onPrimary: "#ffffff",
+  primaryContainer: "#eddcff",
+  onPrimaryContainer: "#533c72",
+  inversePrimary: "#d7bafb",
+  secondary: "#CE7979",
+  onSecondary: "#ffffff",
+  secondaryContainer: "#ffdad9",
+  onSecondaryContainer: "#733335",
+  background: "#fffaff",
+  text: "#1e1e1e",
+  gray: "#ccc4cf",
+  darkGray: "#7b757f",
+  lightGray: "#f3ecf4",
+}
+
+export const darkTheme: AppTheme = {
+  primary: "#d7bafb",
+  onPrimary: "#3b255a",
+  primaryContainer: "#533c72",
+  onPrimaryContainer: "#eddcff",
+  inversePrimary: "#6b538c",
+  secondary: "#ffb3b2",
+  onSecondary: "#561d20",
+  secondaryContainer: "#924849",
+  onSecondaryContainer: "#ffdad9",
+  background: "#201d24",
+  text: "#f5f5f5",
+  gray: "#4a454e",
+  darkGray: "#958e99",
+  lightGray: "#37333a",
+}
