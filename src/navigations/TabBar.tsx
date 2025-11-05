@@ -17,6 +17,7 @@ export default function TabBar() {
         headerShown: false,
         animation: "shift"
       }}
+      detachInactiveScreens={false}
     >
       <Tab.Screen 
         name="ReviewNav" 

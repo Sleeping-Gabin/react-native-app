@@ -1,6 +1,6 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { PropsWithChildren } from "react";
-import { Pressable, StyleSheet, ViewStyle } from "react-native";
+import { Keyboard, Pressable, StyleSheet, ViewStyle } from "react-native";
 import { openSheet, useAppDispatch, useAppSelector } from "../store";
 import { useAppTheme } from "./AppThemeProvider";
 
@@ -30,7 +30,10 @@ export default function SheetLabel(props: SheetLabelProps) {
   return (
     <Pressable 
       style={[styles.label, style]}
-      onPress={() => dispatch(openSheet(name))}
+      onPress={() => {
+        Keyboard.dismiss();
+        dispatch(openSheet(name))
+      }}
     >
       {props.children}
       <MaterialDesignIcons color={theme.text} name={isOpen ? "menu-up" : "menu-down"}/>

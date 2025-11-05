@@ -15,30 +15,37 @@ export default function BookItem(props: BookItemProps) {
 
   const theme = useAppTheme();
 
-  return (
-    <TouchableHighlight
-      underlayColor={theme.lightGray}
-      onPress={onPress}
-    >
-      <View style={[styles.item, itemStyle]}>
-        <Image
-          source={{uri: book.thumbnail}}
-          style={[styles.image, {
-            width: imageWidth
-          }]}
-        />
-        <View style={styles.textContainer}>
-          <SerifText 
-            type="SemiBold" 
-            style={styles.title}
-          >
-            {book.title}
-          </SerifText>
-          <SerifText>{book.authors.join(", ")}</SerifText>
-          <SerifText>{book.publisher} · {book.year}</SerifText>
-        </View>
+  const renderBookItem = () => (
+    <View style={[styles.item, itemStyle]}>
+      <Image
+        source={{uri: book.thumbnail}}
+        style={[styles.image, {
+          width: imageWidth
+        }]}
+      />
+      <View style={styles.textContainer}>
+        <SerifText 
+          type="SemiBold" 
+          style={styles.title}
+        >
+          {book.title}
+        </SerifText>
+        <SerifText>{book.authors.join(", ")}</SerifText>
+        <SerifText>{book.publisher} · {book.year}</SerifText>
       </View>
-    </TouchableHighlight>
+    </View>
+  )
+
+  return (
+    onPress !== undefined ? (
+      <TouchableHighlight
+        underlayColor={theme.lightGray}
+        onPress={onPress}
+      >
+        {renderBookItem()}
+      </TouchableHighlight>
+    )
+    : renderBookItem()
   )
 }
 

@@ -2,7 +2,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import { Keyboard, StyleSheet, TextInput, ToastAndroid, View } from "react-native";
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, ToastAndroid, View } from "react-native";
 import { useAppTheme } from "../components/AppThemeProvider";
 import BookItem from "../components/BookItem";
 import BottomSheet from "../components/BottomSheet";
@@ -49,12 +49,16 @@ export default function ReviewWriteScreen({route}: ReviewWriteScreenProps) {
 
   const addReview = async () => {
     if (reviewTxt.length <= 0) {
-      ToastAndroid.show("내용이 입력되지 않았습니다.", ToastAndroid.SHORT);
+      if (Platform.OS === "android")
+        ToastAndroid.show("내용이 입력되지 않았습니다.", ToastAndroid.SHORT);
+      else
+        Alert.alert("내용이 입력되지 않았습니다.");
+
       dispatch(unpressSave());
       return;
     }
     else if (book === undefined) {
-      return
+      return;
     }
 
     const db = await getDatabase();
@@ -80,7 +84,11 @@ export default function ReviewWriteScreen({route}: ReviewWriteScreenProps) {
 
   const modifyReview = async () => {
     if (reviewTxt.length <= 0) {
-      ToastAndroid.show("내용이 입력되지 않았습니다.", ToastAndroid.SHORT);
+      if (Platform.OS === "android")
+        ToastAndroid.show("내용이 입력되지 않았습니다.", ToastAndroid.SHORT);
+      else
+        Alert.alert("내용이 입력되지 않았습니다.");
+
       dispatch(unpressSave());
       return;
     }
@@ -185,11 +193,20 @@ export default function ReviewWriteScreen({route}: ReviewWriteScreenProps) {
   ));
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <Pressable
+      style={styles.container}
+      onPress={() => Keyboard.dismiss()}
+    >
       { !isKeyboard && book && <BookItem book={book} imageWidth={90} /> }
       { !isKeyboard && <View style={styles.separator}/> }
 
-      <View style={styles.infoContainer}>
+      <View 
+        style={styles.infoContainer}
+      >
         <Info label="날짜">
           <SansSerifText style={styles.date}>
             {date}
@@ -247,7 +264,8 @@ export default function ReviewWriteScreen({route}: ReviewWriteScreenProps) {
         value={reviewTxt}
         onChangeText={(text) => setReviewTxt(text)}
       />
-    </View>
+    </Pressable>
+    </KeyboardAvoidingView>
   )
 }
 

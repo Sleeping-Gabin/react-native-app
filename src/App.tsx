@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { StatusBar, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { enableScreens } from 'react-native-screens';
 import { Provider } from 'react-redux';
 import AppThemeProvider from './components/AppThemeProvider';
 import { getDatabase } from './database/database';
@@ -15,6 +16,7 @@ import { navDarkTheme, navLightTheme } from './styles/navigationThemes';
 import { darkTheme, lightTheme } from './styles/themes';
 
 SplashScreen.preventAutoHideAsync();
+enableScreens();
 
 function App() {
   const colorScheme = useColorScheme();

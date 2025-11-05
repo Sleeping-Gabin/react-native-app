@@ -185,6 +185,7 @@ export default function CalendarScreen() {
         style={[styles.list]}
         contentContainerStyle={styles.listContainer}
         onScroll={scrollHandler}
+        scrollEnabled={false}
       />
     </View>
     </GestureDetector>

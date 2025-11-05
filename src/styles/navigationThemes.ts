@@ -10,7 +10,7 @@ const navigationFonts = {
     fontWeight: "normal" as const,
   },
   bold: {
-    fontFamily: "MaruBuri-Medium",
+    fontFamily: "MaruBuri-SemiBold",
     fontWeight: "normal" as const,
   },
   heavy: {

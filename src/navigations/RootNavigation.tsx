@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View } from "react-native";
-import { useAppTheme } from "../components/AppThemeProvider";
 import ReviewDetailScreen from "../screens/ReviewDetailScreen";
 import ReviewWriteScreen from "../screens/ReviewWriteScreen";
 import { pressDelete, pressSave, useAppDispatch } from "../store";
@@ -13,7 +12,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigation() {
   const dispatch = useAppDispatch();
-  const theme = useAppTheme();
 
   return (
     <Stack.Navigator
@@ -22,6 +20,7 @@ export default function RootNavigation() {
         headerBackground: () => <NavHeader />,
         headerTransparent: false,
         animation: "fade_from_bottom",
+        headerBackButtonDisplayMode: "minimal"
       }}
       initialRouteName="Tab"
     >
@@ -34,7 +33,7 @@ export default function RootNavigation() {
             <View 
               style={{
                 flexDirection: "row",
-                gap: 10
+                gap: 10,
               }}
             >
               <HeaderBtn
