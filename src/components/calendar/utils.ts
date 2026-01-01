@@ -12,10 +12,10 @@ export function getWeekNum(date: dayjs.Dayjs | string) {
     date = dayjs(date);
   }
 
-  const firstDate = date.startOf("month");
+  const firstDay = date.startOf("month").day();
   const endDate = date.endOf("month");
 
-  return endDate.week() - firstDate.week() + 1;
+  return Math.ceil((endDate.date() + firstDay) / 7);
 }
 
 export function getWeekIndex(date: dayjs.Dayjs | string) {
@@ -23,8 +23,8 @@ export function getWeekIndex(date: dayjs.Dayjs | string) {
     date = dayjs(date);
   }
 
-  const firstDate = date.startOf("month");
-  return date.week() - firstDate.week();
+  const firstDay = date.startOf("month").day();
+  return Math.floor((date.date() + firstDay - 1) / 7);
 }
 
 export function getWeekHeight(param: dayjs.Dayjs | string | number) {
