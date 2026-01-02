@@ -1,6 +1,7 @@
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useRef, useState } from "react";
-import { FlatList, StyleSheet, TextInput, TouchableHighlight, View } from "react-native";
+import { FlatList, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "../components/AppThemeProvider";
 import BookItem from "../components/BookItem";
 import BottomSheet from "../components/BottomSheet";
@@ -145,16 +146,28 @@ export default function SearchScreen() {
             {targetList[targetIdx].name}
           </SansSerifText>
         </SheetLabel>
-
-        <TextInput
-          style={styles.searchInput}
-          placeholder="책 검색"
-          placeholderTextColor={theme.darkGray}
-          value={query}
-          onChangeText={(text) => setQuery(text)}
-          onSubmitEditing={() => getBookList(1)}
-          onPress={() => dispatch(closeSheet())}
-        />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="책 검색"
+            placeholderTextColor={theme.darkGray}
+            value={query}
+            onChangeText={(text) => setQuery(text)}
+            onSubmitEditing={() => getBookList(1)}
+            onPress={() => dispatch(closeSheet())}
+          />
+          <TouchableOpacity
+            style={styles.searchBtn}
+            hitSlop={10}
+            onPress={() => getBookList(1)}
+          >
+            <MaterialDesignIcons 
+              name="magnify"
+              style={{
+                color: theme.text,
+                fontSize: 16,
+              }}
+            />
+          </TouchableOpacity>
       </View>
 
       <FlatList
@@ -188,12 +201,17 @@ const createStyles = (theme: AppTheme) => StyleSheet.create({
   },
   searchInput: {
     flex: 7,
-    paddingHorizontal: 10,
+    paddingStart: 10,
+    paddingEnd: 30,
     paddingVertical: 5,
     borderBottomWidth: 1,
     borderColor: theme.primary,
     fontFamily: "Pretendard-Regular",
     color: theme.text
+  },
+  searchBtn: {
+    position: "absolute",
+    right: 20
   },
   header: {
     alignItems: "flex-end",

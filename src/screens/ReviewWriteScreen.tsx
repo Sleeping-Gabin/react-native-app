@@ -2,7 +2,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, ToastAndroid, View } from "react-native";
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "../components/AppThemeProvider";
 import BookItem from "../components/BookItem";
 import BottomSheet from "../components/BottomSheet";
@@ -264,6 +264,22 @@ export default function ReviewWriteScreen({route}: ReviewWriteScreenProps) {
         value={reviewTxt}
         onChangeText={(text) => setReviewTxt(text)}
       />
+
+      {
+        isKeyboard &&
+        <TouchableOpacity
+          style={styles.floatingBtn}
+          onPress={() => Keyboard.dismiss()}
+        >
+          <MaterialDesignIcons
+            name="keyboard-close"
+            style={{
+              color: theme.onSecondary,
+              fontSize: 24
+            }}
+          />
+        </TouchableOpacity>
+      }
     </Pressable>
     </KeyboardAvoidingView>
   )
@@ -300,5 +316,13 @@ const createStyles = (theme: AppTheme) => StyleSheet.create({
     color: theme.text,
     // textAlign: "justify",
     lineHeight: 22
+  },
+  floatingBtn: {
+    padding: 8,
+    borderRadius: "50%",
+    backgroundColor: theme.secondary,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
   }
 });

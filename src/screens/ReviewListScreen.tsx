@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, TextInput, View } from "react-native";
+import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "../components/AppThemeProvider";
 import ReviewItem from "../components/ReviewItem";
+import SansSerifText from "../components/SansSerifText";
 import { getDatabase } from "../database/database";
 import Review, { ReviewRow } from "../database/Review";
 import { AppTheme } from "../styles/themes";
@@ -79,14 +80,26 @@ export default function ReviewListScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="기록 검색"
-        placeholderTextColor={theme.darkGray}
-        value={query}
-        onChangeText={(text) => setQuery(text)}
-        onSubmitEditing={() => filteringReviews()}
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="기록 검색"
+          placeholderTextColor={theme.darkGray}
+          value={query}
+          onChangeText={(text) => setQuery(text)}
+          onSubmitEditing={() => filteringReviews()}
+        />
+        <TouchableOpacity
+          style={styles.inputBtn}
+          onPress={() => filteringReviews()}
+        >
+          <SansSerifText
+            style={{color: theme.onPrimary}}
+          >
+            검색
+          </SansSerifText>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={reviewList}
@@ -103,10 +116,15 @@ const createStyles = (theme: AppTheme) => StyleSheet.create({
   container: {
     flex: 1,
   },
-  input: {
-    alignSelf: "center",
-    width: "50%",
+  inputContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 20,
+    gap: 10
+  },
+  input: {
+    width: "50%",
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderWidth: 1,
@@ -115,8 +133,11 @@ const createStyles = (theme: AppTheme) => StyleSheet.create({
     color: theme.text,
     fontFamily: "Pretendard-Regular"
   },
-  filterContainer: {
-    flexWrap: "wrap"
+  inputBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 4,
+    backgroundColor: theme.primary,
   },
   listContainer: {    
     paddingVertical: 10,
