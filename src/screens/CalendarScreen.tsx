@@ -11,7 +11,7 @@ import { getWeekHeight } from "../components/calendar/utils";
 import ReviewItem from "../components/ReviewItem";
 import { getDatabase } from "../database/database";
 import Review, { ReviewRow } from "../database/Review";
-import { useAppSelector } from "../store";
+import { changeSelected, useAppDispatch, useAppSelector } from "../store";
 import { AppTheme } from "../styles/themes";
 
 export default function CalendarScreen() {
@@ -19,12 +19,15 @@ export default function CalendarScreen() {
   const styles = createStyles(theme);
 
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
   const [dateSet, setDateSet] = useState<Set<string>>(new Set());
   const [reviewMap, setReviewMap] = useState<Map<string, Review[]>>(new Map());
 
   const selectedDate = useAppSelector(state => state.calendar.selectedDate);
-  const month = dayjs(selectedDate).month();
+  const selectedDayjs = dayjs(selectedDate);
+  const firstDate = selectedDayjs.set("date", 1);
+  const month = selectedDayjs.month();
 
   const getDateSet = async () => {
     const newSet = new Set<string>();
@@ -81,7 +84,7 @@ export default function CalendarScreen() {
   const listRef = useAnimatedRef<Animated.FlatList>();
   const scrollOffset = useSharedValue(0);
   const startoffset = useSharedValue(0);
-  const startPoint = useSharedValue(0);
+  const startY = useSharedValue(0);
 
   const maxHeight = useSharedValue(0);
   const minHeight = getWeekHeight(1);
@@ -104,12 +107,12 @@ export default function CalendarScreen() {
 
   const updateValue = (y: number) => {
     if (!isMin.value && calendarHeight.value === minHeight) {
-      startPoint.value = y;
+      startY.value = y;
       startoffset.value = scrollOffset.value;
       isMin.value = true;
     }
     else if (!isMax.value && calendarHeight.value === maxHeight.value) {
-      startPoint.value = y;
+      startY.value = y;
       startoffset.value = scrollOffset.value;
       isMax.value = true;
     } 
@@ -119,31 +122,55 @@ export default function CalendarScreen() {
     }
   }
 
+  const dragPrev = () => {
+    const prevMonthDate = 
+      weekView ? selectedDayjs.subtract(1, "week") 
+      : firstDate.subtract(1, "month");
+    dispatch(changeSelected(prevMonthDate.format("YYYY-MM-DD")));
+  }
+
+  const dragNext = () => {
+    const nextMonthDate = 
+      weekView ? selectedDayjs.add(1, "week") 
+      : firstDate.add(1, "month");
+    dispatch(changeSelected(nextMonthDate.format("YYYY-MM-DD")));
+  }
+
   const drag = Gesture.Pan()
     .onStart(() => {
       startoffset.value = scrollOffset.value;
-      startPoint.value = 0;
+      startY.value = 0;
     })
     .onUpdate(e => {
-      updateValue(e.translationY);
-
-      const move = e.translationY - startPoint.value;
-
-      if (isMin.value && ((move < 0) || (move > 0 && scrollOffset.value > 0))) {
-        scheduleOnRN(() => {
-          listRef.current?.scrollToOffset({
-            offset:  Math.max(0, startoffset.value - move),
-            animated: false,
-          })
-        });
-      } 
-      else {
-        const height = move > 0 ? maxHeight.value : minHeight;
-        calendarHeight.value = withTiming(height, {duration: 300});
+      if (Math.abs(e.translationX) < Math.abs(e.translationY)) {
+        updateValue(e.translationY);
+        
+        const move = e.translationY - startY.value;
+        if (isMin.value && ((move < 0) || (move > 0 && scrollOffset.value > 0))) {
+          scheduleOnRN(() => {
+            listRef.current?.scrollToOffset({
+              offset:  Math.max(0, startoffset.value - move),
+              animated: false,
+            })
+          });
+        } 
+        else {
+          const height = move > 0 ? maxHeight.value : minHeight;
+          calendarHeight.value = withTiming(height, {duration: 300});
+        }
       }
     })
     .onEnd(e => {
       updateValue(e.translationY);
+      
+      if (Math.abs(e.translationX) > Math.abs(e.translationY)) {
+        if (e.translationX > 0) {
+          dragPrev();
+        }
+        else if (e.translationX < 0) {
+          dragNext();
+        }
+      }
     })
     .runOnJS(true);
   
