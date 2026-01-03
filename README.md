@@ -377,8 +377,9 @@ export default function DeleteModal({reviewId}: {reviewId: number}) {
 </div>
 <br>
 
-### 월간 달력 / 주간 달력 전환
+### 달력 전환
 화면을 위아래로 슬라이드 해 월간 / 주간 달력을 전환할 수 있다.  
+화면을 좌우로 슬라이드 해 이전 / 다음 달(주)로 넘어갈 수 있다.  
 날짜별 작성한 독서 기록을 보여준다.  
 
 <details>
@@ -392,35 +393,55 @@ export default function CalendarScreen() {
 
   const calendarHeight = useSharedValue(0);
 
-  const updateValue = (y: number) => {
-    // startPoint, startOffset, isMin, isMax 업데이트
+  const dragPrev = () => {
+    const prevMonthDate = 
+      weekView ? selectedDayjs.subtract(1, "week") 
+      : firstDate.subtract(1, "month");
+    dispatch(changeSelected(prevMonthDate.format("YYYY-MM-DD")));
+  }
+
+  const dragNext = () => {
+    const nextMonthDate = 
+      weekView ? selectedDayjs.add(1, "week") 
+      : firstDate.add(1, "month");
+    dispatch(changeSelected(nextMonthDate.format("YYYY-MM-DD")));
   }
 
   const drag = Gesture.Pan()
     .onStart(() => {
       startoffset.value = scrollOffset.value;
-      startPoint.value = 0;
+      startY.value = 0;
     })
     .onUpdate(e => {
-      updateValue(e.translationY);
-
-      const move = e.translationY - startPoint.value;
-
-      if (isMin.value && ((move < 0) || (move > 0 && scrollOffset.value > 0))) {
-        scheduleOnRN(() => {
-          listRef.current?.scrollToOffset({
-            offset:  Math.max(0, startoffset.value - move),
-            animated: false,
-          })
-        });
-      } 
-      else {
-        const height = move > 0 ? maxHeight.value : minHeight;
-        calendarHeight.value = withTiming(height, {duration: 300});
+      if (Math.abs(e.translationX) < Math.abs(e.translationY)) {
+        updateValue(e.translationY);
+        
+        const move = e.translationY - startY.value;
+        if (isMin.value && ((move < 0) || (move > 0 && scrollOffset.value > 0))) {
+          scheduleOnRN(() => {
+            listRef.current?.scrollToOffset({
+              offset:  Math.max(0, startoffset.value - move),
+              animated: false,
+            })
+          });
+        } 
+        else {
+          const height = move > 0 ? maxHeight.value : minHeight;
+          calendarHeight.value = withTiming(height, {duration: 300});
+        }
       }
     })
     .onEnd(e => {
       updateValue(e.translationY);
+      
+      if (Math.abs(e.translationX) > Math.abs(e.translationY)) {
+        if (e.translationX > 0) {
+          dragPrev();
+        }
+        else if (e.translationX < 0) {
+          dragNext();
+        }
+      }
     })
     .runOnJS(true);
   
